@@ -61,7 +61,7 @@ Implement a **Digital Signal Generator** that performs **line coding**, **scramb
 
 You can download and view the full project specification report here:
 
-👉 [Digital_Signal_Generator_Report.pdf](./Digital_Signal_Generator_Report.pdf)
+👉 [Digital_Signal_Generator_Specification_Report.pdf](./Digital_Signal_Generator_Report.pdf)
 
 ---
 
@@ -101,10 +101,6 @@ You can download and view the full project specification report here:
 | `Utils.java` | Palindrome finder (Manacher’s algorithm). |
 | `app.css` | UI styling. |
 
----
-
-## 🧾 Example Output
-
 
 ---
 
@@ -112,6 +108,7 @@ You can download and view the full project specification report here:
 - B.A. Forouzan, *Data Communications and Networking*
 - W. Stallings, *Data and Computer Communications*
 - IEEE 802.3 / 802.4 Standards
+- Manacher, G. (1975). "A New Linear-Time 'On-Line' Algorithm for Finding the Smallest Initial Palindrome of a String." Journal of the ACM (JACM), 22(3), 346–351.
 
 ---
 
