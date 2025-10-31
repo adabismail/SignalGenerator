@@ -1,0 +1,156 @@
+/* app.css */
+
+/* --- Base & Root --- */
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-base: #3C3F41; /* Base color for controls */
+    -fx-background: #2B2B2B; /* Dark background */
+    -fx-control-inner-background: #45494A;
+    -fx-text-fill: #E0E0E0; /* Light text */
+}
+
+/* --- Control Bar (Top HBox) --- */
+.control-bar {
+    -fx-background-color: #3C3F41;
+    -fx-padding: 12px 15px;
+    -fx-spacing: 10px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 2);
+}
+
+.label {
+    -fx-text-fill: #E0E0E0;
+    -fx-font-weight: bold;
+}
+
+/* --- Buttons --- */
+.button {
+    -fx-background-color: #3498db; /* Primary action blue */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+.button:disabled {
+    -fx-background-color: #5A5A5A;
+    -fx-opacity: 0.7;
+}
+
+/* --- Inputs --- */
+.text-field {
+    -fx-background-color: #45494A;
+    -fx-text-fill: #E0E0E0;
+    -fx-prompt-text-fill: #9A9A9A;
+    -fx-background-radius: 4px;
+    -fx-border-color: #555555;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+.text-field:focused {
+    -fx-border-color: #3498db;
+}
+
+.choice-box {
+    -fx-background-color: #45494A;
+    -fx-background-radius: 4px;
+    -fx-border-color: #555555;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-mark-color: #3498db; /* Color for the dropdown arrow */
+}
+.choice-box .label {
+    -fx-text-fill: #E0E0E0; /* Text inside the choice box */
+}
+.choice-box .context-menu {
+    -fx-background-color: #45494A;
+}
+
+/* --- Right Output Pane --- */
+.output-pane {
+    -fx-padding: 10px;
+    -fx-background-color: #313335;
+    -fx-spacing: 8px;
+}
+.output-pane .label {
+    -fx-font-size: 1.1em;
+    -fx-padding: 0 0 0 5px; /* Align with text area */
+}
+
+/* --- Output Text Area --- */
+.output-area {
+    -fx-control-inner-background: #212121; /* Darker console background */
+    -fx-text-fill: #00E000; /* Green "console" text */
+    -fx-font-family: "Monospaced", "Consolas", "Courier New";
+    -fx-font-size: 1.1em;
+}
+.output-area .content {
+    -fx-background-color: #212121;
+}
+
+/* --- Chart View --- */
+.chart-view {
+    -fx-padding: 10px;
+}
+
+.chart-title {
+    -fx-text-fill: #E0E0E0;
+    -fx-font-size: 1.4em;
+}
+
+.axis {
+    -fx-tick-label-fill: #B0B0B0;
+    -fx-tick-mark-stroke: #555555;
+}
+.axis-label {
+    -fx-text-fill: #E0E0E0;
+    -fx-font-size: 1.1em;
+}
+
+.chart-plot-background {
+    -fx-background-color: #2B2B2B; /* Match root background */
+}
+
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-stroke: #4A4A4A; /* Subtle grid lines */
+}
+
+.chart-legend {
+    -fx-background-color: #3C3F41;
+    -fx-padding: 8px;
+}
+.chart-legend-item {
+    -fx-text-fill: #D0D0D0;
+}
+
+/* --- Custom Chart Series Colors for Dark BG --- */
+.default-color0.chart-series-line { -fx-stroke: #3498db; } /* Blue */
+.default-color1.chart-series-line { -fx-stroke: #e67e22; } /* Orange */
+.default-color2.chart-series-line { -fx-stroke: #2ecc71; } /* Green */
+.default-color3.chart-series-line { -fx-stroke: #f1c40f; } /* Yellow */
+.default-color4.chart-series-line { -fx-stroke: #e74c3c; } /* Red */
+.default-color5.chart-series-line { -fx-stroke: #9b59b6; } /* Purple */
+
+/* --- Dialog Panes --- */
+.dialog-pane {
+    -fx-background-color: #3C3F41;
+    -fx-border-color: #2B2B2B;
+    -fx-border-width: 2px;
+}
+.dialog-pane .label {
+    -fx-text-fill: #E0E0E0;
+}
+.dialog-pane .header-panel {
+    -fx-background-color: #45494A;
+}
+.dialog-pane .button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+.dialog-pane .button:hover {
+    -fx-background-color: #2980b9;
+}
