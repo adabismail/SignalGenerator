@@ -61,7 +61,8 @@ Implement a **Digital Signal Generator** that performs **line coding**, **scramb
 
 You can download and view the full project specification report here:
 
-👉 [Digital_Signal_Generator_Specification_Report.pdf](./Digital_Signal_Generator_Report.pdf)
+👉 [Digital_Signal_Generator_Specification_Report.pdf](./Digital_Signal_Generator_Specification_Report.pdf)
+
 
 ---
 
