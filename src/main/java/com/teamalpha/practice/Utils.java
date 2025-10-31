@@ -1,9 +1,7 @@
 package com.teamalpha.practice;
 
-/**
- * Utilities.
- * longestPalindromicSubstring implemented with Manacher's algorithm (O(n)).
- */
+
+//longestPalindromicSubstring implemented with Manacher's algorithm (O(n)).
 public class Utils {
 
     public static String longestPalindromicSubstring(String s) {

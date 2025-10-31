@@ -9,6 +9,8 @@ import java.util.List;
  */
 public class Decoder {
 
+    private static final double EPS = 1e-6;
+
     private static class AvgResult {
         final double avg;
         final int count;
@@ -36,10 +38,10 @@ public class Decoder {
         double magThreshold = Math.max(0.05, maxAbs * 0.25);
 
         return switch (scheme) {
-            case "NRZ-L" -> decodeNRZL(waveform, samplesPerBit);
-            case "NRZ-I" -> decodeNRZI(waveform, samplesPerBit);
-            case "Manchester" -> decodeManchester(waveform, samplesPerBit);
-            case "Differential Manchester" -> decodeDiffMan(waveform, samplesPerBit);
+            case "NRZ-L" -> decodeNRZL(waveform, samplesPerBit, magThreshold);
+            case "NRZ-I" -> decodeNRZI(waveform, samplesPerBit, magThreshold);
+            case "Manchester" -> decodeManchester(waveform, samplesPerBit, magThreshold);
+            case "Differential Manchester" -> decodeDiffMan(waveform, samplesPerBit, magThreshold);
             case "AMI" -> decodeAMI(waveform, samplesPerBit, magThreshold);
             case "AMI-B8ZS" -> {
                 String prelim = decodeAMI(waveform, samplesPerBit, magThreshold);
@@ -53,57 +55,87 @@ public class Decoder {
         };
     }
 
-    private static String decodeNRZL(List<Double> w, int s) {
+    // ---------- Basic decoders (use magThreshold to be robust to noise) ----------
+
+    private static String decodeNRZL(List<Double> w, int s, double threshold) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i + s <= w.size(); i += s) {
             AvgResult ar = avgSafe(w, i, i + s);
             if (ar.count == 0) break;
-            sb.append(ar.avg > 0 ? '1' : '0');
+            // decide by sign and magnitude
+            if (Math.abs(ar.avg) < threshold) sb.append('0'); // treat near-zero as '0' (conservative)
+            else sb.append(ar.avg > 0 ? '1' : '0');
         }
         return sb.toString();
     }
 
-    private static String decodeNRZI(List<Double> w, int s) {
+    private static String decodeNRZI(List<Double> w, int s, double threshold) {
         StringBuilder sb = new StringBuilder();
+        // first bit is ambiguous in NRZ-I because it depends on initial level;
+        // pick a deterministic choice: assume first bit = '0' (no transition at bit start)
+        // then detect transitions between consecutive bit cells to mark '1'.
+        if (w.size() < s) return "";
         AvgResult first = avgSafe(w, 0, s);
         if (first.count == 0) return "";
-        double prevSign = Math.signum(first.avg);
-        sb.append('X'); // first ambiguous
+        double prev = first.avg;
+        int prevSign = Math.abs(prev) < threshold ? 0 : (int) Math.signum(prev);
+        sb.append('0'); // deterministic choice for the first bit
+
         for (int i = s; i + s <= w.size(); i += s) {
             AvgResult cur = avgSafe(w, i, i + s);
             if (cur.count == 0) break;
-            double currSign = Math.signum(cur.avg);
-            if (currSign != 0 && prevSign != 0 && currSign != prevSign) sb.append('1'); else sb.append('0');
-            if (currSign != 0) prevSign = currSign;
+            double curAvg = cur.avg;
+            int curSign = Math.abs(curAvg) < threshold ? prevSign : (int) Math.signum(curAvg);
+            // a '1' in NRZ-I is encoded as a transition (sign change) at bit boundary
+            if (curSign != 0 && prevSign != 0 && curSign != prevSign) {
+                sb.append('1');
+                prevSign = curSign;
+            } else {
+                sb.append('0');
+                if (curSign != 0) prevSign = curSign; // update if meaningful
+            }
         }
         return sb.toString();
     }
 
-    private static String decodeManchester(List<Double> w, int s) {
+    private static String decodeManchester(List<Double> w, int s, double threshold) {
         StringBuilder sb = new StringBuilder();
         int half = Math.max(1, s / 2);
         for (int i = 0; i + s <= w.size(); i += s) {
             AvgResult a1 = avgSafe(w, i, i + half);
             AvgResult a2 = avgSafe(w, i + half, i + s);
             if (a1.count == 0 || a2.count == 0) break;
-            sb.append(a1.avg > a2.avg ? '1' : '0'); // matches encoder convention
+            // Encoder convention: first half = LOW for '1', HIGH for '0'; second half = inverse.
+            // So for '1' => a1 < a2. For '0' => a1 > a2.
+            double diff = a2.avg - a1.avg;
+            if (Math.abs(diff) < threshold) {
+                // very close — fallback to sign test of full cell
+                double cellAvg = (a1.avg + a2.avg) / 2.0;
+                if (Math.abs(cellAvg) < threshold) sb.append('0'); else sb.append(cellAvg > 0 ? '0' : '1');
+            } else {
+                sb.append(diff > 0 ? '1' : '0');
+            }
         }
         return sb.toString();
     }
 
-    private static String decodeDiffMan(List<Double> w, int s) {
+    private static String decodeDiffMan(List<Double> w, int s, double threshold) {
         StringBuilder sb = new StringBuilder();
         int half = Math.max(1, s / 2);
         if (w.size() < s) return "";
         AvgResult firstEnd = avgSafe(w, half, s);
         if (firstEnd.count == 0) return "";
         double prevEndAvg = firstEnd.avg;
-        sb.append('X');
+        // first bit ambiguous because we don't know starting polarity - choose '0' as default placeholder
+        sb.append('0');
         for (int i = s; i + s <= w.size(); i += s) {
             AvgResult cs = avgSafe(w, i, i + half);
             AvgResult ce = avgSafe(w, i + half, i + s);
             if (cs.count == 0 || ce.count == 0) break;
-            boolean noTransition = Math.signum(cs.avg) == Math.signum(prevEndAvg);
+            // no transition at bit start => '1', transition => '0'
+            int signStart = Math.abs(cs.avg) < threshold ? (int) Math.signum(prevEndAvg) : (int) Math.signum(cs.avg);
+            int signPrevEnd = Math.abs(prevEndAvg) < threshold ? signStart : (int) Math.signum(prevEndAvg);
+            boolean noTransition = signStart == signPrevEnd;
             sb.append(noTransition ? '1' : '0');
             prevEndAvg = ce.avg;
         }
@@ -120,7 +152,7 @@ public class Decoder {
         return sb.toString();
     }
 
-    // ---------- Unscramblers ----------
+    // ---------- Unscramblers (kept logic but robust to threshold) ----------
 
     private static String unscrambleB8ZS(String prelimBits, List<Double> waveform, int s, double threshold) {
         if (prelimBits == null || prelimBits.isEmpty()) return prelimBits;
@@ -136,12 +168,12 @@ public class Decoder {
             double[] av = new double[8];
             for (int k = 0; k < 8; k++) av[k] = bitAvg.apply(b + k);
 
-            boolean posMatch = Math.abs(av[3]) > threshold && Math.abs(av[4]) > threshold
-                    && Math.abs(av[6]) > threshold && Math.abs(av[7]) > threshold
-                    && Math.abs(av[0]) <= threshold && Math.abs(av[1]) <= threshold
+            boolean zerosElsewhere = Math.abs(av[0]) <= threshold && Math.abs(av[1]) <= threshold
                     && Math.abs(av[2]) <= threshold && Math.abs(av[5]) <= threshold;
+            boolean pulsesAt = Math.abs(av[3]) > threshold && Math.abs(av[4]) > threshold
+                    && Math.abs(av[6]) > threshold && Math.abs(av[7]) > threshold;
 
-            if (!posMatch) continue;
+            if (!(zerosElsewhere && pulsesAt)) continue;
 
             int lookBackSign = 0;
             for (int i = b - 1; i >= 0; i--) {
