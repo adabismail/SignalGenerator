@@ -57,6 +57,14 @@ Implement a **Digital Signal Generator** that performs **line coding**, **scramb
 
 ---
 
+## 📄 Project Report
+
+You can download and view the full project specification report here:
+
+👉 [Digital_Signal_Generator_Report.pdf](./Digital_Signal_Generator_Report.pdf)
+
+---
+
 ## 🧮 Algorithms & Complexity
 
 | Component | Algorithm | Time Complexity |
