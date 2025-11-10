@@ -208,8 +208,7 @@ public final class SignalProcessor {
     public static List<Double> encodeAMIB8ZS(String bits) {
         validateSamplesPerBit();
         List<Double> w = new ArrayList<>(bits.length() * SAMPLES_PER_BIT);
-        // polarity of last non-zero physical pulse (±1). Choose initial convention explicitly.
-        int lastNonZeroPolarity = -1; // library default; first emitted real pulse will be +1 (because we flip on emit)
+        int lastNonZeroPolarity = -1; // polarity of last non-zero physical pulse (±1).
         int zeroCount = 0;
         final int spb = SAMPLES_PER_BIT;
 
@@ -229,19 +228,30 @@ public final class SignalProcessor {
                 if (zeroCount == 8) {
                     // compute block start (samples)
                     int startSampleIndex = w.size() - (8 * spb);
-                    // V is same polarity as the last real non-zero (before the run)
-                    double vPol = (double) lastNonZeroPolarity;
-                    // B is opposite polarity
-                    double bPol = (double) -lastNonZeroPolarity;
 
-                    // place substitution: 000 V B 0 V B  (positions 0..7)
-                    setSamples(w, startSampleIndex + POS_V1 * spb, vPol, spb); // V at pos 3
-                    setSamples(w, startSampleIndex + POS_B1 * spb, bPol, spb); // B at pos 4
-                    setSamples(w, startSampleIndex + POS_V2 * spb, vPol, spb); // V at pos 6
-                    setSamples(w, startSampleIndex + POS_B2 * spb, bPol, spb); // B at pos 7
+                    // *** CORRECTION IS HERE ***
+                    // Apply the 000VB0VB rules you provided:
 
-                    // last non-zero after substitution is the last B inserted at pos7:
-                    lastNonZeroPolarity = (int) bPol;
+                    // V1 (pos 3): Same polarity as last pulse
+                    double v1Pol = (double) lastNonZeroPolarity;
+
+                    // B1 (pos 4): Alternates from V1
+                    double b1Pol = -v1Pol;
+
+                    // V2 (pos 6): Same polarity as B1 (this is a violation)
+                    double v2Pol = b1Pol;
+
+                    // B2 (pos 7): Alternates from V2
+                    double b2Pol = -v2Pol;
+
+                    // place substitution: 000 V B 0 V B
+                    setSamples(w, startSampleIndex + POS_V1 * spb, v1Pol, spb); // V at pos 3
+                    setSamples(w, startSampleIndex + POS_B1 * spb, b1Pol, spb); // B at pos 4
+                    setSamples(w, startSampleIndex + POS_V2 * spb, v2Pol, spb); // V at pos 6
+                    setSamples(w, startSampleIndex + POS_B2 * spb, b2Pol, spb); // B at pos 7
+
+                    // last non-zero after substitution is the last B (B2) inserted at pos 7:
+                    lastNonZeroPolarity = (int) b2Pol;
                     zeroCount = 0;
                 }
             }
@@ -272,7 +282,7 @@ public final class SignalProcessor {
                     int startSampleIndex = w.size() - (4 * spb);
                     // If even number of pulses since last substitution -> B00V
                     if ((pulsesSinceLastSubstitution % 2) == 0) {
-                        int B = -lastNonZeroPolarity; // B is opposite of last non-zero
+                        int B = lastNonZeroPolarity; // B is opposite of last non-zero
                         int V = B;                    // V same polarity as B (violation)
                         // place B at first zero position and V at last zero position
                         setSamples(w, startSampleIndex + 0 * spb, (double) B, spb); // B at pos 0

@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 
-public class HelloApplication extends Application {
+public class  HelloApplication extends Application {
 
     private TextArea outputArea;
     private LineChart<Number, Number> chart;
