@@ -280,19 +280,28 @@ public final class SignalProcessor {
                 addSamples(w, ZERO, spb);
                 if (zeroCount == 4) {
                     int startSampleIndex = w.size() - (4 * spb);
+
                     // If even number of pulses since last substitution -> B00V
                     if ((pulsesSinceLastSubstitution % 2) == 0) {
-                        int B = lastNonZeroPolarity; // B is opposite of last non-zero
-                        int V = B;                    // V same polarity as B (violation)
+
+                        // *** CORRECTION IS HERE ***
+                        // B must follow AMI (alternate from last pulse)
+                        int B = -lastNonZeroPolarity;
+                        // V must match B (violates AMI relative to B)
+                        int V = B;
+
                         // place B at first zero position and V at last zero position
                         setSamples(w, startSampleIndex + 0 * spb, (double) B, spb); // B at pos 0
                         setSamples(w, startSampleIndex + 3 * spb, (double) V, spb); // V at pos 3
+
                         // After substitution, last non-zero becomes V (which equals B)
                         lastNonZeroPolarity = V;
                     } else {
-                        // odd -> 000V ; V has same polarity as last non-zero
+                        // odd -> 000V (This was already correct)
+                        // V has same polarity as last non-zero (violates AMI)
                         int V = lastNonZeroPolarity;
                         setSamples(w, startSampleIndex + 3 * spb, (double) V, spb);
+
                         // lastNonZeroPolarity remains V (same as before)
                         lastNonZeroPolarity = V;
                     }
@@ -304,5 +313,4 @@ public final class SignalProcessor {
         }
         return w;
     }
-
 }
