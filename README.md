@@ -69,13 +69,14 @@ You can download and view the full project specification report here:
 
 ## 🖼️ Project Screenshots
 
-| Feature | Screenshot |
-|----------|-------------|
-| **Encoding Techniques Interface** | ![Encoding Techniques](screenshots/encoding_techniques.png) |
-| **Scrambling Techniques Selection** | ![Scrambling Techniques](screenshots/scrambling_techniques.png) |
-| **AMI Scrambling Example (HDB3 / B8ZS)** | ![Scrambling Example](screenshots/scrambling.png) |
-| **Decoder Query (Prompt for Decoding)** | ![Asking Decoding](screenshots/asking_decoding.png) |
-| **Final Output with Decoded Bitstream** | ![Final Output](screenshots/final_output.png) |
+| Feature                                  | Screenshot                                                      |
+|------------------------------------------|-----------------------------------------------------------------|
+| **Encoding Techniques Interface**        | ![Encoding Techniques](screenshots/encoding_techniques.png)     |
+| **Scrambling Techniques Selection**      | ![Scrambling Techniques](screenshots/scrambling_techniques.png) |
+| **AMI Scrambling Example (HDB3 / B8ZS)** | ![Scrambling Example](screenshots/scrambling.png)               |
+| **Decoder Query (Prompt for Decoding)**  | ![Asking Decoding](screenshots/asking_decoding.png)             |
+| **Final Output of B8ZS**                 | ![Final Output](screenshots/b8zs.png)                           |
+| **Final Output of HDB3**                 | ![Final Output](screenshots/hdb3.png)                           |
 
 ---
 
