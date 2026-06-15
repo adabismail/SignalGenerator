@@ -8,12 +8,12 @@
 
 ---
 
-## 🎯 Objective
+## Objective
 Implement a **Digital Signal Generator** that performs **line coding**, **scrambling**, and **analog-to-digital conversion** using **PCM** or **Delta Modulation**, and supports waveform-based **decoding** (extra marks).
 
 ---
 
-## ⚙️ Features
+## Features
 
 - **Input Modes**
     - **Digital:** Bitstream input → Line encoding.
@@ -32,7 +32,7 @@ Implement a **Digital Signal Generator** that performs **line coding**, **scramb
 
 ---
 
-## 🧩 Decoding Assumptions
+## Decoding Assumptions
 
 | Scheme | Note |
 |---------|------|
@@ -44,7 +44,7 @@ Implement a **Digital Signal Generator** that performs **line coding**, **scramb
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 1. Open project in **IntelliJ IDEA** (or any Java IDE).
 2. Ensure JavaFX SDK is configured in project settings.
@@ -53,21 +53,21 @@ Implement a **Digital Signal Generator** that performs **line coding**, **scramb
 5. Select **mode**, **encoder**, and optionally **scrambler** → click **Generate Signal**.
 6. Optionally choose **Decode** to recover bitstream.
 
-> ℹ️ *Always start from `Launcher.java` (not `HelloApplication.java`) for proper JavaFX startup.*
+>  *Always start from `Launcher.java` (not `HelloApplication.java`) for proper JavaFX startup.*
 
 ---
 
-## 📄 Project Report
+## Project Report
 
 You can download and view the full project specification report here:
 
-👉 [Digital_Signal_Generator_Specification_Report.pdf](./Digital_Signal_Generator_Specification_Report.pdf)
+ [Digital_Signal_Generator_Specification_Report.pdf](./Digital_Signal_Generator_Specification_Report.pdf)
 
 
 ---
 
 
-## 🖼️ Project Screenshots
+## Project Screenshots
 
 | Feature                                  | Screenshot                                                      |
 |------------------------------------------|-----------------------------------------------------------------|
@@ -81,7 +81,7 @@ You can download and view the full project specification report here:
 ---
 
 
-## 🧮 Algorithms & Complexity
+## Algorithms & Complexity
 
 | Component | Algorithm | Time Complexity |
 |------------|------------|----------------|
@@ -92,7 +92,7 @@ You can download and view the full project specification report here:
 
 ---
 
-## 🧑‍💻 File Overview
+## File Overview
 
 | File | Description |
 |------|--------------|
@@ -106,7 +106,7 @@ You can download and view the full project specification report here:
 
 ---
 
-## 📚 References
+## References
 - B.A. Forouzan, *Data Communications and Networking*
 - W. Stallings, *Data and Computer Communications*
 - IEEE 802.3 / 802.4 Standards
@@ -114,7 +114,7 @@ You can download and view the full project specification report here:
 
 ---
 
-## 🏁 Summary
+## Summary
 A complete **digital communication simulation system** —  
 encoding, modulation, scrambling, decoding, and visualization —  
 built with **JavaFX** and optimized algorithms for real-time performance.
